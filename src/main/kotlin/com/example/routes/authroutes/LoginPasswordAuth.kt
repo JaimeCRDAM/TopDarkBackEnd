@@ -13,7 +13,7 @@ fun Application.login(){
             route("/auth"){
                 get("/userpassword") {
                     val result = call.principal<UserIdPrincipal>()!!
-                    call.respond(result.response.statusCode, result.response)
+                    call.respond(result.response!!.statusCode, result.response)
                 }
             }
         }
