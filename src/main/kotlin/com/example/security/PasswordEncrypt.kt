@@ -1,7 +1,6 @@
 package com.example.security
 
 import io.ktor.util.*
-import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import kotlin.random.Random
@@ -12,12 +11,12 @@ val ALGORITHM = "HmacSHA1"
 val HASH_KEY = hex(SECRET_KEY)
 val HMAC_KEY = SecretKeySpec(HASH_KEY, ALGORITHM)
 
-fun hash(password:String):String{
+fun hash(password:String, salt:String = ""):String{
     val hmac = Mac.getInstance(ALGORITHM)
     hmac.init(HMAC_KEY)
-    val salt = randomStringByKotlinRandom()
-    password.plus(salt)
-    return salt.plus(":"+hex(hmac.doFinal(password.toByteArray(Charsets.UTF_8))))
+    val finalSalt = if(salt == "") randomStringByKotlinRandom() else salt
+    password.plus(finalSalt)
+    return finalSalt.plus(":"+hex(hmac.doFinal(password.toByteArray(Charsets.UTF_8))))
 }
 
 const val charPool = "ABCDEFGHIJKLMNOPqRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
