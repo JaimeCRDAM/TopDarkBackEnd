@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class UserServiceImpl : UserService {
     override suspend fun registerUser(params: CreateUserParams): User? {
         lateinit var statement: InsertOneResult
-        val document: Document = Document()
+        val document = Document()
         lateinit var insertedId: ObjectId
         var resultDocument: Document? = null
         dbQuery{
@@ -33,31 +33,39 @@ class UserServiceImpl : UserService {
         return documentToUser(resultDocument)
     }
 
+    override suspend fun loginUser(params: LoginUserParams): User? {
+        var resultDocument: Document? = null
+        dbQuery{
+            resultDocument = getDocumentByUserName(params.credential.name)
+        }
+        val dbPassword = resultDocument?.get("password") as String
+        val salt = dbPassword.split(":")[0]
+        if( hash(params.credential.password, salt) ==  dbPassword){
+            return documentToUser(resultDocument)
+        }
+        return null
+    }
+
+    private fun documentToUser(document: Document?): User?{
+        return if(document == null) null
+        else {
+            val id = document["_id"].toString()
+            User(
+            id = id,
+            createdAt = document["createdAt"].toString(),
+            lastLogin = document["lastLogin"].toString(),
+            avatar = document["avatar"] as String,
+            nickname = document["nickName"] as String,
+            username = document["userName"] as String,
+            )
+        }
+    }
+
     override suspend fun findUserByUsername(userName: String): User? {
         var resultDocument: Document? = null
         dbQuery{
             resultDocument = getDocumentByUserName(userName)
         }
         return documentToUser(resultDocument)
-    }
-
-    override suspend fun loginUser(userName: String, password: String) {
-        TODO("Not yet implemented")
-    }
-
-    private fun documentToUser(row: Document?): User?{
-
-        return if(row == null) null
-        else {
-            val id = row["_id"].toString()
-            User(
-            id = id,
-            createdAt = row["createdAt"].toString(),
-            lastLogin = row["lastLogin"].toString(),
-            avatar = row["avatar"] as String,
-            nickname = row["nickName"] as String,
-            username = row["userName"] as String,
-            )
-        }
     }
 }
