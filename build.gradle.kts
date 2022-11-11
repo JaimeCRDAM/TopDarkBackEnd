@@ -25,7 +25,8 @@ dependencies {
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-auth:$ktor_version")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation ("org.jetbrains.exposed:exposed-core:0.40.1")
     implementation ("org.jetbrains.exposed:exposed-dao:0.40.1")
@@ -39,6 +40,7 @@ dependencies {
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     implementation("org.jetbrains.kotlin:kotlin-serialization:1.5.21")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+    implementation("io.ktor:ktor-serialization-jackson:$ktor_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }

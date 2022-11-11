@@ -15,9 +15,9 @@ class UserCommandsImpl(
         } else {
             val user = userService.registerUser(params)
             if(user != null){
-                val token = JwtConfig.instance.createAccessToken(user.id.toString())
+                val token = JwtConfig.instance.createAccessToken(user.username)
                 user.authToken = token
-                Response.SucessResponse(data = user)
+                Response.SuccessResponse(data = user)
             } else {
                 Response.ErrorResponse(message = "Invalid Data")
             }

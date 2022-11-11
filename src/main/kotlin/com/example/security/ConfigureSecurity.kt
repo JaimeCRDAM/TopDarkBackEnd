@@ -8,13 +8,12 @@ import io.ktor.server.auth.jwt.*
 
 fun Application.configureSecurity() {
     JwtConfig.init("vamos")
-    authentication {
-        jwt {
+    install(Authentication) {
+        jwt("auth-jwt") {
             verifier(JwtConfig.instance.verifier)
             validate {
-                val claim = it.payload.getClaim(JwtConfig.CLAIM).asInt()
-                if(claim != null){
-                    UserIdPrincipal(claim)
+                if (it.payload.getClaim(JwtConfig.CLAIM).asString() != "") {
+                    JWTPrincipal(it.payload)
                 } else {
                     null
                 }

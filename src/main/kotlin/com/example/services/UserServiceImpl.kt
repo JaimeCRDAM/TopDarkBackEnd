@@ -46,14 +46,18 @@ class UserServiceImpl : UserService {
     }
 
     private fun documentToUser(row: Document?): User?{
+
         return if(row == null) null
-        else User(
-            id = row["_id"] as ObjectId,
+        else {
+            val id = row["_id"].toString()
+            User(
+            id = id,
             createdAt = row["createdAt"].toString(),
             lastLogin = row["lastLogin"].toString(),
             avatar = row["avatar"] as String,
             nickname = row["nickName"] as String,
             username = row["userName"] as String,
-        )
+            )
+        }
     }
 }

@@ -19,10 +19,9 @@ fun Application.authRoutes(userCommands: UserCommands) {
     routing {
         route("/auth"){
             post("/register"){
-                //dropTable()
-                val params = Json.decodeFromString<CreateUserParams>(call.receive())
+                val params = call.receive<CreateUserParams>()
                 val result = userCommands.registerUser(params)
-                call.respond(result.statusCode, Json.encodeToJsonElement(result))
+                call.respond(result.statusCode, result)
             }
         }
     }
