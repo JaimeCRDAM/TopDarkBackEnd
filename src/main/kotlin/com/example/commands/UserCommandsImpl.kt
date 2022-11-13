@@ -13,7 +13,7 @@ class UserCommandsImpl(
 ) : UserCommands {
     override suspend fun registerUser(params: CreateUserParams): Response<User?> {
         return if (doUsernameExist(params.userName)){
-            Response(message = "Username already exists", statusCode = HttpStatusCode.NotAcceptable)
+            Response(message = "Username already exists", statusCode = HttpStatusCode.Unauthorized)
         } else {
             val user = userService.registerUser(params)
             if(user != null){
@@ -28,7 +28,7 @@ class UserCommandsImpl(
 
     override suspend fun loginUser(params: LoginUserParams): Response<User?> {
         return if (!doUsernameExist(params.credential.name)){
-            Response(message = "Username doesn't exist", statusCode = HttpStatusCode.NotFound)
+            Response(message = "Username doesn't exist", statusCode = HttpStatusCode.Unauthorized)
         } else {
             val user = userService.loginUser(params)
             if(user != null){
@@ -36,7 +36,7 @@ class UserCommandsImpl(
                 user.authToken = token
                 Response(data = user, statusCode = HttpStatusCode.Accepted)
             } else {
-                Response(message = "Invalid username/password", statusCode = HttpStatusCode.NotAcceptable)
+                Response(message = "Invalid username/password", statusCode = HttpStatusCode.Unauthorized)
             }
         }
     }
