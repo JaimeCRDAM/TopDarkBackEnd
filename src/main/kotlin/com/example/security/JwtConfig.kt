@@ -18,7 +18,7 @@ class JwtConfig private constructor(secret:String){
         .withAudience(AUDIENCE)
         .withIssuer(ISSUER)
         .withClaim(CLAIM, id)
-        .withExpiresAt(Date(System.currentTimeMillis() + 30000))
+        .withExpiresAt(Date(System.currentTimeMillis() + 1800000))
         .sign(algorithm)
 
 

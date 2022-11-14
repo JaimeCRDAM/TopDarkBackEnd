@@ -43,7 +43,7 @@ fun Application.module() {
     val userService = UserServiceImpl()
     val userCommands = UserCommandsImpl(userService)
     registerRoute(userCommands)
-    configureSecurity(userCommands)
+    configureSecurity(userCommands, userService)
     login()
     jwtAuth()
 
