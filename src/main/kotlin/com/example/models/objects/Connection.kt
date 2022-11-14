@@ -9,37 +9,43 @@ import org.bson.Document
 import org.bson.types.ObjectId
 
 object Connection {
+
     private val dbConnection: MongoClient = Factories.dbInit()
 
-    suspend fun <T> dbQuery(block: () -> T): T = withContext(Dispatchers.IO){
+    suspend fun <T> dbQuery(block: () -> T): T = withContext(Dispatchers.IO) {
         block()
     }
 
-    fun getTable(database:String, name:String): MongoCollection<Document> {
-        return dbConnection.getDatabase("usuarios").getCollection(name)
+    fun getTable(database: String = "usuarios", table: String): MongoCollection<Document> {
+        return dbConnection.getDatabase(database).getCollection(table)
     }
 
-    fun insertIntoTable(database:String, name:String, document:Document): InsertOneResult {
-        return dbConnection.getDatabase(database).getCollection(name).insertOne(document)
+    fun insertIntoTable(database: String = "usuarios", table: String, document: Document): InsertOneResult {
+        return dbConnection.getDatabase(database).getCollection(table).insertOne(document)
     }
 
-    fun getCurrentRows(database:String, name:String): Int{
-        return dbConnection.getDatabase(database).getCollection(name).listIndexes().toList().size
+    fun getCurrentRows(database: String = "usuarios", table: String): Int {
+        return dbConnection.getDatabase(database).getCollection(table).listIndexes().toList().size
     }
 
-    fun getDocumentById(database:String, name: String, id: ObjectId?): Document? {
-        return dbConnection.getDatabase(database).getCollection(name).find(Document("_id", id)).first()
+    fun getDocumentById(database: String = "usuarios", table: String, id: ObjectId?): Document? {
+        return dbConnection.getDatabase(database).getCollection(table).find(Document("_id", id)).first()
     }
 
-    fun getDocumentByUserName(username:String): Document?{
-        return dbConnection.getDatabase("usuarios").getCollection("users").find(Document("userName",username)).first()
+    fun getDocumentByUserName(database: String = "usuarios", table: String = "users", username: String): Document? {
+        return dbConnection.getDatabase(database).getCollection(table).find(Document("userName", username)).first()
     }
 
-    fun getConnection(): MongoClient{
+    fun getRoleByUserName(database: String = "usuarios", table: String = "roles", userName: String): String {
+        val id = getDocumentByUserName(username = userName)?.get("_id") as ObjectId
+        return getDocumentById(database, table, id)?.get("role") as String
+    }
+
+    fun getConnection(): MongoClient {
         return dbConnection
     }
 
-    fun dropTable(){
+    fun dropTable() {
         dbConnection.getDatabase("usuarios").getCollection("users").drop()
     }
 }

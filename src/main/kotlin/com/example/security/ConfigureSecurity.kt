@@ -15,9 +15,10 @@ fun Application.configureSecurity(userCommands: UserCommands, userService: UserS
             verifier(JwtConfig.instance.verifier)
             validate {
                 val userName = it.payload.getClaim(JwtConfig.CLAIM).asString()
+                val role = userService.findRoleByUserName(userName)
                 if (it.expiresAt!! > Date() && userName != "") {
                     val response = userCommands.findUserByName(userName)
-                    UserIdPrincipal(response, customPayLoad = it.payload)
+                    UserIdPrincipal(response, customPayLoad = it.payload, role)
                 } else {
                     null
                 }

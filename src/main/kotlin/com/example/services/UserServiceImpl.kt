@@ -1,9 +1,11 @@
 package com.example.services
 
+import com.example.models.Globals.USER_ROLE
 import com.example.models.User
 import com.example.models.objects.Connection.dbQuery
 import com.example.models.objects.Connection.getDocumentById
 import com.example.models.objects.Connection.getDocumentByUserName
+import com.example.models.objects.Connection.getRoleByUserName
 import com.example.models.objects.Connection.insertIntoTable
 import com.example.security.hash
 import com.mongodb.client.result.InsertOneResult
@@ -14,33 +16,42 @@ import java.time.LocalDateTime
 class UserServiceImpl : UserService {
     override suspend fun registerUser(params: CreateUserParams): User? {
         lateinit var statement: InsertOneResult
-        val document = Document()
+        val userDocument = Document()
+        val roleDocument = Document()
         lateinit var insertedId: ObjectId
         var resultDocument: Document? = null
-        dbQuery{
-            document
+        dbQuery {
+            userDocument
                 .append("userName", params.userName)
                 .append("nickName", params.nickName)
                 .append("avatar", params.avatar)
                 .append("password", hash(params.password))
                 .append("createdAt", LocalDateTime.now())
                 .append("lastLogin", "")
-            statement = insertIntoTable("usuarios","users", document)
+
+            statement = insertIntoTable("usuarios", "users", userDocument)
             insertedId = statement.insertedId?.asObjectId()?.value!!
-            resultDocument = getDocumentById("usuarios","users", insertedId)
+            roleDocument.append("_id", insertedId).append("role", USER_ROLE)
+            insertIntoTable(table = "userRoles", document = userDocument)
+            insertIntoTable(table = "roles", document = roleDocument)
+            resultDocument = getDocumentById("usuarios", "users", insertedId)
         }
 
         return documentToUser(resultDocument)
     }
 
+    override suspend fun findRoleByUserName(username: String): String {
+        return getRoleByUserName(userName = username)
+    }
+
     override suspend fun loginUser(params: LoginUserParams): User? {
         var resultDocument: Document? = null
-        dbQuery{
-            resultDocument = getDocumentByUserName(params.credential.name)
+        dbQuery {
+            resultDocument = getDocumentByUserName(username = params.credential.name)
         }
         val dbPassword = resultDocument?.get("password") as String
         val salt = dbPassword.split(":")[0]
-        if( hash(params.credential.password, salt) ==  dbPassword){
+        if (hash(params.credential.password, salt) == dbPassword) {
             return documentToUser(resultDocument)
         }
         return null
@@ -49,12 +60,7 @@ class UserServiceImpl : UserService {
     private fun documentToUser(document: Document?): User?{
         return if(document == null) null
         else {
-            val id = document["_id"].toString()
             User(
-            id = id,
-            createdAt = document["createdAt"].toString(),
-            lastLogin = document["lastLogin"].toString(),
-            avatar = document["avatar"] as String,
             nickname = document["nickName"] as String,
             username = document["userName"] as String,
             )
@@ -64,7 +70,7 @@ class UserServiceImpl : UserService {
     override suspend fun findUserByUsername(userName: String): User? {
         var resultDocument: Document? = null
         dbQuery{
-            resultDocument = getDocumentByUserName(userName)
+            resultDocument = getDocumentByUserName(username = userName)
         }
         return documentToUser(resultDocument)
     }

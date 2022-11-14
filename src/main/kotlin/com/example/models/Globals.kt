@@ -1,6 +1,8 @@
 package com.example.models
 
-import com.example.models.objects.Connection.getCurrentRows
-
 object Globals {
+
+    val ADMIN_ROLE = "Dark Lord"
+    val USER_ROLE = "Pilot"
+
 }
