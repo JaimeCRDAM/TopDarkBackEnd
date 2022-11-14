@@ -1,0 +1,1 @@
+scp -r C:\Users\dam201\ktor-sample\build\install\ktor-sample ubuntu@192.168.1.132:~/TopDark/

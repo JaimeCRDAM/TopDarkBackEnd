@@ -22,8 +22,8 @@ class UserServiceImpl : UserService {
         var resultDocument: Document? = null
         dbQuery {
             userDocument
-                .append("userName", params.userName)
-                .append("nickName", params.nickName)
+                .append("username", params.userName)
+                .append("nickname", params.nickName)
                 .append("avatar", params.avatar)
                 .append("password", hash(params.password))
                 .append("createdAt", LocalDateTime.now())
@@ -32,7 +32,6 @@ class UserServiceImpl : UserService {
             statement = insertIntoTable("usuarios", "users", userDocument)
             insertedId = statement.insertedId?.asObjectId()?.value!!
             roleDocument.append("_id", insertedId).append("role", USER_ROLE)
-            insertIntoTable(table = "userRoles", document = userDocument)
             insertIntoTable(table = "roles", document = roleDocument)
             resultDocument = getDocumentById("usuarios", "users", insertedId)
         }
@@ -61,8 +60,8 @@ class UserServiceImpl : UserService {
         return if(document == null) null
         else {
             User(
-            nickname = document["nickName"] as String,
-            username = document["userName"] as String,
+            nickname = document["nickname"] as String,
+            username = document["username"] as String,
             )
         }
     }

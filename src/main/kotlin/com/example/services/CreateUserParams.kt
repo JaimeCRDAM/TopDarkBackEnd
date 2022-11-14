@@ -7,4 +7,5 @@ data class CreateUserParams(
     val nickName: String,
     val password: String,
     val avatar: String,
+    val experience: Int,
 )

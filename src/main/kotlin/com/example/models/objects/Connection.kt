@@ -29,16 +29,19 @@ object Connection {
     }
 
     fun getDocumentById(database: String = "usuarios", table: String, id: ObjectId?): Document? {
-        return dbConnection.getDatabase(database).getCollection(table).find(Document("_id", id)).first()
+        val result = dbConnection.getDatabase(database).getCollection(table).find(Document("_id", id.toString())).first()
+        print(result)
+        return result
     }
 
     fun getDocumentByUserName(database: String = "usuarios", table: String = "users", username: String): Document? {
-        return dbConnection.getDatabase(database).getCollection(table).find(Document("userName", username)).first()
+        return dbConnection.getDatabase(database).getCollection(table).find(Document("username", username)).first()
     }
 
     fun getRoleByUserName(database: String = "usuarios", table: String = "roles", userName: String): String {
         val id = getDocumentByUserName(username = userName)?.get("_id") as ObjectId
-        return getDocumentById(database, table, id)?.get("role") as String
+        val role = getDocumentById(database, table, id)?.get("role").toString()
+        return role
     }
 
     fun getConnection(): MongoClient {
