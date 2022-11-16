@@ -28,10 +28,12 @@ object Connection {
         return dbConnection.getDatabase(database).getCollection(table).listIndexes().toList().size
     }
 
-    fun getDocumentById(database: String = "usuarios", table: String, id: ObjectId?): Document? {
-        val result = dbConnection.getDatabase(database).getCollection(table).find(Document("_id", id.toString())).first()
-        print(result)
-        return result
+    fun getDocumentById(database: String = "usuarios", table: String = "users", id: ObjectId?): Document? {
+        val id = if(table == "roles") id.toString() else id
+        val result = dbConnection.getDatabase(database)
+        val result2 = result.getCollection(table)
+        val result3 = result2.find(Document("_id", id))
+        return result3.first()
     }
 
     fun getDocumentByUserName(database: String = "usuarios", table: String = "users", username: String): Document? {

@@ -1,4 +1,4 @@
-package com.example.services
+package com.example.services.userservices
 
 import com.example.models.User
 

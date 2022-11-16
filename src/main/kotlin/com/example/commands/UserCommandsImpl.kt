@@ -2,9 +2,9 @@ package com.example.commands
 
 import com.example.models.User
 import com.example.security.JwtConfig
-import com.example.services.CreateUserParams
-import com.example.services.LoginUserParams
-import com.example.services.UserService
+import com.example.services.userservices.CreateUserParams
+import com.example.services.userservices.LoginUserParams
+import com.example.services.userservices.UserService
 import com.example.utils.Response
 import io.ktor.http.*
 

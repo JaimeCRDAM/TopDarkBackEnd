@@ -1,4 +1,4 @@
-package com.example.services
+package com.example.services.userservices
 
 import com.example.models.Globals.USER_ROLE
 import com.example.models.User
@@ -30,11 +30,11 @@ class UserServiceImpl : UserService {
                 .append("lastLogin", "")
 
             statement = insertIntoTable("usuarios", "users", userDocument)
-            insertedId = statement.insertedId?.asObjectId()?.value!!
+            insertedId = statement.insertedId?.asObjectId()!!.value
             roleDocument.append("_id", insertedId).append("role", USER_ROLE)
             insertIntoTable(table = "roles", document = roleDocument)
-            resultDocument = getDocumentById("usuarios", "users", insertedId)
         }
+        resultDocument = getDocumentByUserName(username = params.userName)
 
         return documentToUser(resultDocument)
     }

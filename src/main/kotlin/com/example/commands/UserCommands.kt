@@ -1,8 +1,8 @@
 package com.example.commands
 
 import com.example.models.User
-import com.example.services.CreateUserParams
-import com.example.services.LoginUserParams
+import com.example.services.userservices.CreateUserParams
+import com.example.services.userservices.LoginUserParams
 import com.example.utils.Response
 
 interface UserCommands {

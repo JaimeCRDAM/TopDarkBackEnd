@@ -2,7 +2,7 @@ package com.example.models.plugins
 
 import com.example.commands.UserCommands
 import com.example.models.Globals.ADMIN_ROLE
-import com.example.services.CreateUserParams
+import com.example.services.userservices.CreateUserParams
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*

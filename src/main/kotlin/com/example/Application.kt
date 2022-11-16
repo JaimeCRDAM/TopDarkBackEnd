@@ -4,8 +4,10 @@ import com.example.commands.UserCommandsImpl
 import com.example.models.plugins.jwtAuth
 import com.example.models.plugins.registerRoute
 import com.example.routes.authroutes.login
+import com.example.routes.register.mission.registerMission
 import com.example.security.configureSecurity
-import com.example.services.UserServiceImpl
+import com.example.services.missionservices.MissionServiceImpl
+import com.example.services.userservices.UserServiceImpl
 import com.fasterxml.jackson.core.util.DefaultIndenter
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter
 import com.fasterxml.jackson.databind.SerializationFeature
@@ -32,11 +34,14 @@ fun Application.module() {
         }
     }
     val userService = UserServiceImpl()
+    val missionService = MissionServiceImpl()
     val userCommands = UserCommandsImpl(userService)
     registerRoute(userCommands)
+    registerMission(missionService)
     configureSecurity(userCommands, userService)
     login()
     jwtAuth()
+
 
 }
 

@@ -1,8 +1,8 @@
 package com.example.security
 
 import com.example.commands.UserCommands
-import com.example.services.LoginUserParams
-import com.example.services.UserService
+import com.example.services.userservices.LoginUserParams
+import com.example.services.userservices.UserService
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
