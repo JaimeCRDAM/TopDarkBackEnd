@@ -15,8 +15,8 @@ fun hash(password:String, salt:String = ""):String{
     val hmac = Mac.getInstance(ALGORITHM)
     hmac.init(HMAC_KEY)
     val finalSalt = if(salt == "") randomStringByKotlinRandom() else salt
-    password.plus(finalSalt)
-    return finalSalt.plus(":"+hex(hmac.doFinal(password.toByteArray(Charsets.UTF_8))))
+    val saltedPassword = password.plus(finalSalt)
+    return finalSalt.plus(":"+hex(hmac.doFinal(saltedPassword.toByteArray(Charsets.UTF_8))))
 }
 
 const val charPool = "ABCDEFGHIJKLMNOPqRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"

@@ -1,7 +1,9 @@
 package com.example.models.objects
 
+import com.example.models.Globals
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoCollection
+import com.mongodb.client.MongoDatabase
 import com.mongodb.client.result.InsertOneResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -16,16 +18,8 @@ object Connection {
         block()
     }
 
-    fun getTable(database: String = "usuarios", table: String): MongoCollection<Document> {
-        return dbConnection.getDatabase(database).getCollection(table)
-    }
-
     fun insertIntoTable(database: String = "usuarios", table: String, document: Document): InsertOneResult {
         return dbConnection.getDatabase(database).getCollection(table).insertOne(document)
-    }
-
-    fun getCurrentRows(database: String = "usuarios", table: String): Int {
-        return dbConnection.getDatabase(database).getCollection(table).listIndexes().toList().size
     }
 
     fun getDocumentById(database: String = "usuarios", table: String = "users", id: ObjectId?): Document? {
@@ -36,21 +30,38 @@ object Connection {
         return result3.first()
     }
 
-    fun getDocumentByUserName(database: String = "usuarios", table: String = "users", username: String): Document? {
+    fun getUserByUserName(database: String = "usuarios", table: String = "users", username: String): Document? {
         return dbConnection.getDatabase(database).getCollection(table).find(Document("username", username)).first()
     }
 
-    fun getRoleByUserName(database: String = "usuarios", table: String = "roles", userName: String): String {
-        val id = getDocumentByUserName(username = userName)?.get("_id") as ObjectId
-        val role = getDocumentById(database, table, id)?.get("role").toString()
+    fun getShipByName(name: String): Document? {
+        return dbConnection.getDatabase("usuarios").getCollection("ships").find(Document("plate", name)).first()
+    }
+
+    fun getRoleByUserName(database: String = "usuarios", table: String = "users", userName: String): String {
+        val role = getUserByUserName(username = userName)?.get("role").toString()
         return role
     }
 
-    fun getConnection(): MongoClient {
-        return dbConnection
+    fun getAllPilots(database: String = "usuarios", table: String = "users"): List<Document> {
+        return dbConnection.getDatabase(database).getCollection(table).find().filter { it["role"] == Globals.USER_ROLE }
+    }
+    fun getPilotById(database: String = "usuarios", table: String = "users", id: String): Document? {
+        return dbConnection.getDatabase(database).getCollection(table).find().filter { it["_id"].toString() == id }.first()
     }
 
-    fun dropTable() {
-        dbConnection.getDatabase("usuarios").getCollection("users").drop()
+    fun getAllMission(database: String = "usuarios", table: String = "missions"): List<Document>?{
+        return dbConnection.getDatabase(database).getCollection(table).find().filter{ it == it }
+    }
+    fun getMissionById(database: String = "usuarios", table: String = "missions", id: String): Document?{
+        return dbConnection.getDatabase(database).getCollection(table).find().filter{ it["_id"].toString() == id }.first()
+    }
+
+    fun getAllShips(database: String = "usuarios", table: String = "ships"): List<Document>?{
+        return dbConnection.getDatabase(database).getCollection(table).find().filter{ it == it }
+    }
+
+    fun getCollection(name: String): MongoCollection<Document> {
+        return dbConnection.getDatabase("usuarios").getCollection(name)
     }
 }

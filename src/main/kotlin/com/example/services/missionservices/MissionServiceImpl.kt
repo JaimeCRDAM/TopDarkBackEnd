@@ -1,20 +1,16 @@
 package com.example.services.missionservices
 
 
-import com.example.models.Globals
-import com.example.models.User
+import com.example.models.Mission
+import com.example.models.Ship
 import com.example.models.objects.Connection
 import com.example.models.objects.Connection.dbQuery
-import com.example.security.hash
-import com.example.utils.Response
 import com.mongodb.client.result.InsertOneResult
-import io.ktor.http.*
 import org.bson.Document
 import org.bson.types.ObjectId
-import java.time.LocalDateTime
 
 class MissionServiceImpl : MissionService {
-    override suspend fun registerMission(params: RegisterMissionParams, missionType: String): Response<Boolean?> {
+    override suspend fun registerMission(params: RegisterMissionParams, missionType: String): RegisterMission? {
         lateinit var statement: InsertOneResult
         val userDocument = Document()
         lateinit var insertedId: ObjectId
@@ -25,14 +21,49 @@ class MissionServiceImpl : MissionService {
                 .append("firstCheck", params.firstCheck)
                 .append("secondCheck", params.secondCheck)
                 .append("missionType", missionType)
+                .append("owner", "")
 
             statement = Connection.insertIntoTable("usuarios", "missions", userDocument)
             insertedId = statement.insertedId!!.asObjectId().value
         }
-        val didItEnter  = Connection.getDocumentById(table = "missions", id = insertedId)
-        if (didItEnter != null){
-            return Response(message = "Mission registered", statusCode = HttpStatusCode.OK)
+        resultDocument = Connection.getDocumentById(table = "missions", id = insertedId)
+
+        return documentToRegisterMission(resultDocument)
+    }
+
+    override suspend fun getAllMissions(): MutableList<Mission>? {
+        val resultQuery = Connection.getAllMission() ?: return null
+        val ships2: MutableList<Mission> = mutableListOf()
+        resultQuery.forEach {
+            if(documentToMission(it) != null){
+                ships2.add(documentToMission(it)!!)
+            }
         }
-        return Response(message = "Mission could not be registered", statusCode = HttpStatusCode.NotAcceptable)
+        return ships2.toMutableList()
+    }
+
+    private fun documentToRegisterMission(document: Document?): RegisterMission? {
+        return if(document == null) null
+        else {
+            RegisterMission(
+                RegisterMissionParams(
+                    amount = document["amount"] as Int,
+                    firstCheck = document["firstCheck"] as Boolean ,
+                    secondCheck = document["secondCheck"] as Boolean,
+                ),
+                missionType = document["missionType"] as String
+            )
+        }
+    }
+
+    private fun documentToMission(document: Document): Mission?{
+        if(document["owner"]!="")return null
+       return Mission(
+            _id = document["_id"].toString(),
+            amount = document["amount"] as Int,
+            firstCheck = document["firstCheck"] as Boolean,
+            secondCheck = document["secondCheck"] as Boolean,
+            missionType = document["missionType"] as String,
+        )
     }
 }

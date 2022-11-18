@@ -38,7 +38,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation-jvm:2.1.3")
     implementation("io.ktor:ktor-serialization-gson-jvm:2.1.3")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-    implementation("org.jetbrains.kotlin:kotlin-serialization:1.5.21")
+    implementation("org.jetbrains.kotlin:kotlin-serialization:1.7.20")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
     implementation("io.ktor:ktor-serialization-jackson:$ktor_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")

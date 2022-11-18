@@ -1,4 +1,4 @@
-package com.example.services.userservices
+package com.example.services.user_services
 
 import io.ktor.server.auth.*
 

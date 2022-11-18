@@ -1,5 +1,9 @@
 package com.example.models
 
-import com.example.services.missionservices.RegisterMissionParams
-
-data class Mission(val dataClass: RegisterMissionParams, val missionType: String)
+data class Mission(
+    val _id: String,
+    val amount: Int,
+    val firstCheck: Boolean,
+    val secondCheck: Boolean,
+    val missionType: String
+)

@@ -1,29 +1,22 @@
-package com.example.routes.register.mission
-
-import com.example.commands.mission_commands.MissionCommands
-import com.example.services.missionservices.RegisterMissionParams
+import com.example.commands.user_commands.UserCommands
 import com.example.models.Globals
-import com.example.services.missionservices.MissionService
 import com.example.utils.Response
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Application.registerMission(missionCommands: MissionCommands) {
+fun Application.getPilots(userCommands: UserCommands) {
     routing {
         route("/auth") {
             authenticate("auth-jwt") {
-                post("/register/mission/{id}") {
+                get("/pilots") {
                     val role = call.principal<com.example.security.UserIdPrincipal>()?.role
                     if (role == Globals.ADMIN_ROLE) {
-                        val generalDataClass = call.receive<RegisterMissionParams>()
-                        val missionType = call.parameters["id"]!!
-                        val result = missionCommands.registerMission(generalDataClass,missionType)
+                        val result = userCommands.getAllPilots()
                         call.respond(result.statusCode, result)
-                        return@post
+                        return@get
                     }
                     val result = Response<Boolean?>(message ="You are not an admin", statusCode = HttpStatusCode.Unauthorized )
                     call.respond(result.statusCode, result)

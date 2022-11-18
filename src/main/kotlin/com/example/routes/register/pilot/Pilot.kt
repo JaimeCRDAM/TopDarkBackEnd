@@ -1,15 +1,15 @@
 package com.example.models.plugins
 
-import com.example.commands.UserCommands
+import com.example.commands.user_commands.UserCommands
 import com.example.models.Globals.ADMIN_ROLE
-import com.example.services.userservices.CreateUserParams
+import com.example.services.user_services.CreateUserParams
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Application.registerRoute(userCommands: UserCommands) {
+fun Application.registerPilot(userCommands: UserCommands) {
     routing {
         route("/auth") {
             authenticate("auth-jwt") {
